@@ -13,13 +13,13 @@
 <body>
 
   <h1>FlatGeobuf Drawing Experiment</h1>
-  <p>How fast can we draw a million points to a canvas context with FlatGeobuf?</p>
+  <p>Based on <a href="https://flatgeobuf.org/examples/leaflet/">https://flatgeobuf.org/examples/leaflet/</a></p>
+  <p>How fast can we draw a lot of points to a canvas context with FlatGeobuf?</p>
 
   <canvas id="cnv" width="600" height="600"></canvas>
 
   <script>
     document.addEventListener("DOMContentLoaded", async () => {
-
       const width = 600;
       const height = 600;
       const canvas = document.getElementById('cnv');
@@ -33,8 +33,10 @@
         .domain([-180, 180])
         .range([10, width - 10])
 
-      function handleHeaderMeta(headerMeta) {
-        console.log(headerMeta)
+        function handleHeaderMeta(headerMeta) {
+        const header = document.getElementById('header')
+        const formatter = new JSONFormatter(headerMeta, 10)
+        header.appendChild(formatter.render())
       }
 
       const response = await fetch("data/one_hundred_thousand.fgb");
@@ -46,7 +48,6 @@
         undefined,
         handleHeaderMeta
       )) {
-        console.log(".")
         const coords = feature.geometry.coordinates
         ctx.fillRect(lonScale(coords[0]), latScale(coords[1]), 1, 1)
       }
