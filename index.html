@@ -37,9 +37,9 @@
         console.log(headerMeta)
       }
 
-      const response = await fetch("https://github.com/amoeba/flatgeobuf-experiements/blob/main/site/data/one_hundred_thousand.fgb?raw=true");
+      const response = await fetch("/data/one_hundred_thousand.fgb");
 
-      console.log("Gor response", response);
+      console.log("Got response", response);
 
       for await (let feature of flatgeobuf.deserialize(
         response.body,
