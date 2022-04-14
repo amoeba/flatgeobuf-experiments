@@ -6,7 +6,7 @@ from numpy.random import default_rng
 
 rng = default_rng()
 
-n = 1000
+n = 100000
 lons = rng.uniform(-180, 180, n)
 lats = rng.uniform(-90, 90, n)
 pairs = zip(lons, lats)
