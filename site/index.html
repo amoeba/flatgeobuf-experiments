@@ -1,0 +1,61 @@
+<html>
+<head>
+  <title>FlatGeobuf Drawing Experiment</title>
+
+  <script src="https://unpkg.com/flatgeobuf@3.22.0/dist/flatgeobuf-geojson.min.js"></script>
+  <script src="https://unpkg.com/json-formatter-js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3-array@3"></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3-color@3"></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3-format@3"></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3-interpolate@3"></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3-scale@4"></script>
+</head>
+<body>
+
+  <h1>FlatGeobuf Drawing Experiment</h1>
+  <p>How fast can we draw a million points to a canvas context with FlatGeobuf?</p>
+
+  <canvas id="cnv" width="600" height="600"></canvas>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+
+      const width = 600;
+      const height = 600;
+      const canvas = document.getElementById('cnv');
+      const ctx = canvas.getContext('2d');
+
+      const latScale = d3.scaleLinear()
+        .domain([-90, 90])
+        .range([10, height - 10])
+
+      const lonScale = d3.scaleLinear()
+        .domain([-180, 180])
+        .range([10, width - 10])
+
+      function handleHeaderMeta(headerMeta) {
+        console.log(headerMeta)
+      }
+
+      const response = await fetch("/data/one_thousand.fgb");
+
+      console.log("Gor response", response);
+
+      for await (let feature of flatgeobuf.deserialize(
+        response.body,
+        undefined,
+        handleHeaderMeta
+      )) {
+        console.log(".")
+        const coords = feature.geometry.coordinates
+        ctx.fillRect(lonScale(coords[0]), latScale(coords[1]), 1, 1)
+      }
+    });
+  </script>
+
+  <div id="header">
+    <h3>Parsed header content</h3>
+  </div>
+</body>
+
+</html>
